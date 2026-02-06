@@ -1,0 +1,31 @@
+name: Kuro Auto Signin
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '00 0 * * *'   # 北京时间 08:00（UTC+8）
+
+jobs:
+  signin:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 拉取仓库
+      uses: actions/checkout@v3
+
+    - name: 安装 Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: 安装依赖
+      run: |
+        pip install -r requirements.txt
+
+    - name: 写入 config.yml
+      run: |
+        echo "${{ secrets.KURO_CONFIG }}" > config.yml
+
+    - name: 运行签到
+      run: |
+        python main.py
